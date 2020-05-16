@@ -35,12 +35,26 @@ int tablero_cargar_tablero(tablero_t* self, char* path){
 // Llena campo indicado del tablero
 // de no ser posible modificar su valor retorna 1,
 // 0 en caso de modificarlo correctamente.
-int tablero_modificar_campo(tablero_t* self, int fila, int col, int valor);
+void tablero_modificar_estado_campo(tablero_t* self, int fila, int col){
+    int actual = self->tabla[fila][col];
+    actual == 0 ? (self->tabla[fila][col] = 1) : (self->tabla[fila][col] = 0);
+}
 
 // Recive una buffer el cual es completado con la representación
 // del tablero, lista para ser impresa.
-void tablero_cadena(tablero_t* self, char buf[]);
+void tablero_imprimir(tablero_t* self){
+    for (int i=0 ; i< self->h ; i++){
+        for (int j=0 ; j< self->l ; j++){
+            printf("%i ", self->tabla[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 
 // Elimina el talbero creado
-void tablero_eliminar(tablero_t* self);
+void tablero_eliminar(tablero_t* self){
+    for (int i=0 ; i< self->h ; i++) free(self->tabla[i]);
+    free(self->tabla);
+    free(self);
+}
