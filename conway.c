@@ -5,7 +5,7 @@
 #include "comandos.h"
 #include "tablero.h"
 
-bool POR_ARCHIVO = true;
+bool IMPRESION_POR_ARCHIVO = true;
 
 // Parámetros recibidos:
 // i -> cantidad de archivos a escribir
@@ -29,7 +29,7 @@ int main(int argc, char* argv[]){
     tablero_cargar_tablero(tablero, path);  
 
     for (int n = 1; n <= i; ++n){
-        tablero_imprimir(tablero, n, POR_ARCHIVO); 
+        tablero_imprimir(tablero, n, IMPRESION_POR_ARCHIVO); 
         tablero = tablero_modificar(tablero);
     }
     tablero_eliminar(tablero);
