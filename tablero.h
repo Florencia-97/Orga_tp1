@@ -89,14 +89,25 @@ void tablero_imprimir(tablero_t* self, int i, bool archivo, char* prefijo){
     archivo ? imprimir_archivo(self, i, prefijo) : imprimir_terminal(self);
 }
 
-unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j,
-                    unsigned int M, unsigned int N);
-
-
 int mod(int x, int m) {
     int r = x%m;
     return r<0 ? r+m : r;
 }
+
+unsigned int vecinos_mips(unsigned char *a, unsigned int i, unsigned int j,
+                    unsigned int M, unsigned int N){
+    int contador = 0;
+    for (int c1 = -1; c1 <= 1; ++c1){
+        int f = mod( i + c1 , N);
+        for (int c2 = -1; c2 <= 1; ++c2){
+            if (c1 == 0 && c2 == 0) continue;
+            int c = mod( j + c2, M);
+            if (*(a + f*M + c) == 1) contador++;
+        }
+    }
+    return contador;
+}
+
 
 unsigned int vecinos_c(int** a, unsigned int i, unsigned int j,
                     unsigned int M, unsigned int N){
@@ -118,6 +129,7 @@ tablero_t* tablero_modificar(tablero_t* self){
     for (int i=0 ; i< self->h ; i++){
         for (int j=0 ; j< self->l ; j++){
             unsigned int vecinos = vecinos_c(self->tabla, i, j, self->l, self->h);
+            // unsigned int vecinos = vecinos_mips((unsigned char*)&self->tabla[0][0], i, j, self->l, self->h);
             int viva = self->tabla[i][j];
             if ((vecinos < 2) || (vecinos > 3))
                 tablero_nuevo->tabla[i][j] = 0;
