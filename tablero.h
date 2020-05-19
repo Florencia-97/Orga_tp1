@@ -59,9 +59,10 @@ void imprimir_terminal(tablero_t* self){
     printf("\n"); 
 }
 
-void imprimir_archivo(tablero_t* self, int i){
-    char filename[sizeof "pref100.pbm"];
-    sprintf(filename, "pref%03d.pbm", i);
+void imprimir_archivo(tablero_t* self, int i, char* prefijo){
+    size_t len_pref = strlen(prefijo);
+    char filename[sizeof("pref100.pbm") + len_pref];
+    sprintf(filename, "%s%03d.pbm", prefijo, i);
     FILE* fp = fopen(filename, "wb");
 
     static unsigned char color_vivo[3] = {0,170,228};
@@ -84,8 +85,8 @@ void imprimir_archivo(tablero_t* self, int i){
 
 // Si archivo es true se imprime el tablero en un archivo
 // Caso contraio, por terminal
-void tablero_imprimir(tablero_t* self, int i, bool archivo){
-    archivo ? imprimir_archivo(self, i) : imprimir_terminal(self);
+void tablero_imprimir(tablero_t* self, int i, bool archivo, char* prefijo){
+    archivo ? imprimir_archivo(self, i, prefijo) : imprimir_terminal(self);
 }
 
 unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j,
