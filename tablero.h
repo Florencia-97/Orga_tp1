@@ -6,7 +6,7 @@
 int ZOOM_ARCHIVO = 30; // Mantener un número múltiplo de 10
 
 typedef struct tablero{
-   int* tabla;
+   unsigned char* tabla;
    int l;
    int h;
 }tablero_t;
@@ -17,7 +17,7 @@ void tablero_eliminar(tablero_t* self);
 // que es luego tratada como un grilla
 tablero_t* tablero_crear(int length, int height){
     tablero_t* tablero = (tablero_t*) malloc(sizeof(tablero_t));
-    tablero->tabla = (int*) calloc(height * length , sizeof(int));
+    tablero->tabla = (unsigned char*) calloc(height * length , sizeof(unsigned char));
     if (!tablero->tabla) return NULL;
     tablero->l = length;
     tablero->h = height;
@@ -91,22 +91,8 @@ int mod(int x, int m) {
     return r<0 ? r+m : r;
 }
 
-unsigned int vecinos_mips(unsigned char *a, unsigned int i, unsigned int j,
-                    unsigned int M, unsigned int N){
-    int contador = 0;
-    for (int c1 = -1; c1 <= 1; ++c1){
-        int f = mod( i + c1 , N);
-        for (int c2 = -1; c2 <= 1; ++c2){
-            if (c1 == 0 && c2 == 0) continue;
-            int c = mod( j + c2, M);
-            if (*(a + f*M + c) == 1) contador++;
-        }
-    }
-    return contador;
-}
 
-
-unsigned int vecinos_c(int* a, unsigned int i, unsigned int j,
+unsigned int vecinos(unsigned char* a, unsigned int i, unsigned int j,
                     unsigned int M, unsigned int N){
     int contador = 0;
     for (int c1 = -1; c1 <= 1; ++c1){
@@ -125,14 +111,13 @@ tablero_t* tablero_modificar(tablero_t* self){
     if (!tablero_nuevo) return NULL;
     for (int i=0 ; i< self->h ; i++){
         for (int j=0 ; j< self->l ; j++){
-            unsigned int vecinos = vecinos_c(self->tabla, i, j, self->l, self->h);
-            // unsigned int vecinos = vecinos_mips((unsigned char*)&self->tabla[0][0], i, j, self->l, self->h);
+            unsigned int v = vecinos(&self->tabla[0], i, j, self->l, self->h);
             int viva = self->tabla[i*self->l + j];
-            if ((vecinos < 2) || (vecinos > 3))
+            if ((v < 2) || (v > 3))
                 tablero_nuevo->tabla[i*self->l + j] = 0;
-            if (viva && (vecinos == 2 || vecinos == 3))
+            if (viva && (v == 2 || v == 3))
                 tablero_nuevo->tabla[i*self->l + j] = 1;
-            if (!viva && vecinos == 3){
+            if (!viva && v == 3){
                 tablero_nuevo->tabla[i*self->l + j] = 1;
             }
         }
