@@ -62,8 +62,8 @@ void imprimir_archivo(tablero_t* self, int i, char* prefijo){
     sprintf(filename, "%s%03d.pbm", prefijo, i);
     FILE* fp = fopen(filename, "wb");
 
-    static unsigned char color_vivo[3] = {0,170,228};
-    static unsigned char color_muerto[3] = {255,255,255};
+    static unsigned char color_vivo[3] = {0,0,0}; //Negro
+    static unsigned char color_muerto[3] = {255,255,255}; //Blanco
     (void) fprintf(fp, "P6\n%d %d\n255\n", self->l*ZOOM_ARCHIVO, self->h*ZOOM_ARCHIVO);
     
     for (int i=0 ; i<(self->h * ZOOM_ARCHIVO) ; i++){
