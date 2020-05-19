@@ -16,6 +16,7 @@ void tablero_eliminar(tablero_t* self);
 tablero_t* tablero_crear(int length, int height){
     tablero_t* tablero = (tablero_t*) malloc(sizeof(tablero_t));
     tablero->tabla = (int**) malloc(height * sizeof(int *));
+    if (!tablero->tabla) return NULL;
     for (int i=0 ; i<height ; i++) {
         tablero->tabla[i] = (int*) malloc(length*sizeof(int));
         for (int j=0; j<length; j++)
@@ -63,8 +64,8 @@ void imprimir_archivo(tablero_t* self, int i){
     sprintf(filename, "pref%03d.pbm", i);
     FILE* fp = fopen(filename, "wb");
 
-    static unsigned char color_vivo[3] = {255,0,0};
-    static unsigned char color_muerto[3] = {0,0,255};
+    static unsigned char color_vivo[3] = {0,170,228};
+    static unsigned char color_muerto[3] = {255,255,255};
     (void) fprintf(fp, "P6\n%d %d\n255\n", self->l*ZOOM_ARCHIVO, self->h*ZOOM_ARCHIVO);
     
     for (int i=0 ; i<(self->h * ZOOM_ARCHIVO) ; i++){
@@ -112,6 +113,7 @@ unsigned int vecinos_c(int** a, unsigned int i, unsigned int j,
 
 tablero_t* tablero_modificar(tablero_t* self){
     tablero_t* tablero_nuevo = tablero_crear(self->l, self->h);
+    if (!tablero_nuevo) return NULL;
     for (int i=0 ; i< self->h ; i++){
         for (int j=0 ; j< self->l ; j++){
             unsigned int vecinos = vecinos_c(self->tabla, i, j, self->l, self->h);

@@ -26,12 +26,14 @@ int main(int argc, char* argv[]){
 
     //tablero inicial
     tablero_t* tablero = tablero_crear(M, N);
+    if (!tablero) return 1;
     tablero_cargar_tablero(tablero, path);  
 
     for (int n = 1; n <= i; ++n){
         tablero_imprimir(tablero, n, IMPRESION_POR_ARCHIVO); 
         tablero = tablero_modificar(tablero);
     }
+
     tablero_eliminar(tablero);
     return 0;
 }
