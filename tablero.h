@@ -92,7 +92,7 @@ int mod(int x, int m) {
 }
 
 
-unsigned int vecinos(unsigned char* a, unsigned int i, unsigned int j,
+unsigned int vecinos_c(unsigned char* a, unsigned int i, unsigned int j,
                     unsigned int M, unsigned int N){
     int contador = 0;
     for (int c1 = -1; c1 <= 1; ++c1){
@@ -106,12 +106,21 @@ unsigned int vecinos(unsigned char* a, unsigned int i, unsigned int j,
     return contador;
 }
 
+// LLamada a la función de mips
+unsigned int vecinos_mips(unsigned char* a, unsigned int i, unsigned int j,
+                    unsigned int M, unsigned int N){
+    // Acá tenemos que llamar a la función implementada en vecinos.S
+    // extern vecinos();
+    // return vecinos();
+    return 0;
+}
+
 tablero_t* tablero_modificar(tablero_t* self){
     tablero_t* tablero_nuevo = tablero_crear(self->l, self->h);
     if (!tablero_nuevo) return NULL;
     for (int i=0 ; i< self->h ; i++){
         for (int j=0 ; j< self->l ; j++){
-            unsigned int v = vecinos(&self->tabla[0], i, j, self->l, self->h);
+            unsigned int v = vecinos_c(&self->tabla[0], i, j, self->l, self->h);
             int viva = self->tabla[i*self->l + j];
             if ((v < 2) || (v > 3))
                 tablero_nuevo->tabla[i*self->l + j] = 0;
