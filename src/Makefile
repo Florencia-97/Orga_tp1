@@ -14,7 +14,7 @@
 _DEPS = params_t.h
 # If needed, use the MIPS .S file. Just replace 'vecinos.c' 
 # with 'vecinos.s'.
-_SRC1 = conway.c tablero.c cmd_line_parser.c vecinos.c mod.S
+_SRC1 = conway.c tablero.c cmd_line_parser.c vecinos.S mod.S
 _OBJ1 = conway.o tablero.o cmd_line_parser.o
 # ------------------------------------------------------------
 # Configuration.
