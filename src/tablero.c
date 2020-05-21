@@ -4,6 +4,7 @@
 que es luego tratada como un grilla */
 tablero_t *tablero_crear(int length, int height)
 {
+    /* TODO: check malloc and calloc errors. */
     tablero_t *tablero = (tablero_t *)malloc(sizeof(tablero_t));
     tablero->tabla = (unsigned char *)calloc(height * length, sizeof(unsigned char));
     if (!tablero->tabla)
@@ -64,6 +65,8 @@ void tablero_imprimir(tablero_t *self, int iteracion, params_t *params)
     else
     {
         size_t len_pref = strlen(params->prefix);
+        /* TODO: no entiendo como funciona esto. No podemos allocar memoria estatica con 'len_pref' que recien 
+        sabemos su contenido en tiempo de ejecucion. */
         char filename[sizeof("pref100.pbm") + len_pref];
         sprintf(filename, "../output/%s%03d.pbm", params->prefix, iteracion);
         FILE *fp = fopen(filename, "wb");
