@@ -2,4 +2,8 @@ src/.vscode/*
 conway
 *.o
 *.pbm
+*.aux
+*.log
+*.synctex.gz
+*.toc
 

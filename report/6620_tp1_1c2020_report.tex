@@ -1,0 +1,532 @@
+\input{config.tex}
+%-----------------------------------%
+%									%
+%		Comienzo del documento		%
+%									%
+%-----------------------------------%
+\begin{document}
+%-----------------------------------%
+%									%
+%			Caratula				%
+%									%
+%-----------------------------------%
+\pagestyle{fancy}
+\begin{titlepage}
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for horizontal lines, change thickness here
+	\center % Centre everything on the page
+	
+	\thispagestyle{empty}
+	\begin{center}
+		\includegraphics[scale=1]{includes/banner_fiuba.pdf}\\
+	\end{center}
+	
+% 	\vspace*{\stretch{1}}
+	
+	\textsc{\LARGE \textsc{[66.20] Organización de Computadoras}}\\[0.5cm]
+	\textsc{\Large \textsc{Trabajo Práctico 1}}\\[0.5cm]
+	\textsc{\large 1\textsuperscript{er} Cuatrimestre 2020}\\[0.25cm]
+	
+	\HRule\\[0.5cm]
+	{\huge\bfseries Conjunto de instrucciones MIPS}\\[0.2cm]
+	\HRule\\[0.5cm]
+	
+	\begin{tabbing}
+		\hspace{2cm}\=\+
+		\underline{AUTORES}\hspace{-1cm}\=\+\hspace{1cm}\=\hspace{6cm}\=\\[0.2cm]
+		
+		Husain Cerruti, Ignacio Santiago.	\>\>- \#90.117\\
+		\>\footnotesize{$<$ihusain@fi.uba.ar$>$}\\
+		
+		Rodríguez Florencia	\>\>- \#100.033\\
+		\>\footnotesize{$<$florrr1997@gmail.com$>$}\\
+		
+		x	\>\>- \#x\\
+		\>\footnotesize{$<$x$>$}\\
+		
+		\<\underline{CÁTEDRA}\\[0.2cm]
+		Dr. Ing. Hamkalo, José Luis. \\
+		
+		\<\underline{CURSO}\\[0.2cm]
+		Dr. Ing. Juan Heguiabehere \\
+		Ing. Tomás Niño Kehoe \\
+		 Ing. Matías Stahl \\[1cm]
+		
+		\<\underline{FECHA DE ENTREGA}\>\>\> \today
+		\\[0.2cm]
+		
+		\<\underline{FECHA DE APROBACIÓN}\>\>\> 
+		\\[0.2cm]
+		
+		\<\underline{CALIFICACIÓN}\>\>\> 
+		\\[0.2cm]
+		
+		\<\underline{FIRMA DE APROBACIÓN}
+		\\[0.5cm]
+		
+	\end{tabbing}
+	
+	
+% 	\vspace*{\stretch{1}}
+	
+	
+\end{titlepage}
+
+%-----------------------------------%
+%									%
+%			Indice					%
+%									%
+%-----------------------------------%
+\clearpage
+
+\tableofcontents							
+
+\clearpage
+
+%-----------------------------------%
+%									%
+%		Seccion:Objetivos			%
+%									%
+%-----------------------------------%
+\section{Objetivos}
+El presente trabajo tiene los siguientes objetivos:
+\begin{itemize}
+    \item Diseñar un codificador/decodificador (\emph{codec}) de información en formato base 64.
+    \item Utilizar el lenguaje \textit{Assembly} MIPS32 para implementar el cálculo del estado de vecinos y algunas funciones auxiliares.
+    \item Utilizar la ABI presentada por la cátedra para el desarrollo de los códigos en \textit{Assembly}.
+    \item Utilizar el lenguaje de programación C para desarrollar lo necesario para el procesamiento de las opciones de línea de comandos, apertura y cierre de archivos, y reporte de errores, e invocar el código en \textit{Assembly}.
+    \item Compilar el programa en el sistema operativo Linux Debian utilizando una máquina con arquitectura MIPS32.
+    \item Realizar pruebas de caja negra para verificar que el programa está funcionando de manera correcta.
+\end{itemize}
+%-------------------------------%
+%								%
+%			Seccion				%
+%								%
+%-------------------------------%
+\section{Diseño e implementación del programa}
+
+Se diseñó un programa en lenguaje ANSI C que implementa el juego de la vida de Conway...
+
+El programa se estructura de la siguiente manera:
+\begin{itemize}
+	\item \underline{Análisis gramatical de la línea de comandos}: se analizan las opciones ingresadas por la línea de comandos haciendo uso de la función \texttt{parse\_cmd\_line()}. La misma se encarga de inicializar una estructura del tipo \texttt{params\_t} utilizada para almacenar las opciones que ingresó el cliente, y cuya definición es
+	\begin{lstlisting}[language=C, style=StyleC]
+    	typedef struct params_t
+    	{
+    	int i;
+    	int N;
+    	int M;
+    	FILE *inputStream;
+    	FILE *outputStream;
+    	char *prefix;
+    	} params_t;
+	\end{lstlisting}
+	Además, hace uso de la función \texttt{getopt\_long()} de la biblioteca \texttt{getopt.h}. Dicha función provee una forma simple de procesar cada opción que es leída, extrayendo los argumentos de cada una. En caso de que no se encuentre alguna opción, se utiliza su valor por defecto según las especificaciones del trabajo.
+	
+	Como opcional, se puede utilizar el argumento \texttt{-o -} para suprimir la generación de imágenes, mostrar la evolución del juego en la consola.
+
+	\item \underline{Validación de opciones:} a medida que se va analizando cada opción de la línea de comandos, se valida cada una de ellas utilizando las funciones 
+	\begin{lstlisting}[language=C, style=StyleC]
+    	void option_iterations();
+    	void option_rows_size();
+    	void option_columns_size();
+    	output_state validate_stream_name();
+    	output_state option_input_file();
+    	output_state option_output_prefix();
+    \end{lstlisting}
+    Además, las mismas realizan la correcta inicialización de las diferentes variables dentro de la estructura \texttt{params\_t} descripta en el punto anterior, o en caso de que el usuario ingresó las opciones de ayuda e indicación de versión del programa, se imprime por el flujo \texttt{stderr} dicha información.
+    
+	En caso de que se encuentre algún error en el argumento de alguna de las opciones, el usuario es informado por el flujo \texttt{stderr}, y se aborta la ejecución del programa utilizando la función \texttt{exit()}. Para ello, se creó un tipo enumerativo para simplificar el manejo de errores, definiendo los códigos que pueden devolver las funciones desarrolladas:
+	\begin{lstlisting}[language=C, style=StyleC]
+		typedef enum output_states_
+		{
+		outOK,
+		outERROR
+		} output_state;
+	\end{lstlisting}
+	
+	\item \underline{Creación y carga del tablero:}
+	\hl{TODO: explicar.}
+	
+	\item \underline{Generación de imágenes y cálculo de vecinos:}
+	\hl{TODO: explicar.}
+		
+	\item \underline{Terminación del programa:} una vez finalizado el procesamiento, se liberan los recursos utilizados, y se devuelve el control al sistema operativo.
+\end{itemize}
+
+El código fuente desarrollado en ASM MIPS32 y en C se encuentra en el apéndice (\ref{appendix_codigo_fuente}) con sus respectivos \emph{headers} en (\ref{appendix_headers}).
+
+A continuación se describen las secciones importantes de las funciones desarrolladas y se muestra para cada una de ellas el stack que deben crear según la convención descripta en \cite{abi} y \cite{abi_curso}. Se recuerda que se debe agregar padding para alinear el stack a 8 bytes como se requiere en la convención de llamadas a función, por lo que hay algunos stacks que incorporan las variables con nombre \texttt{PADDING\_X} para mostrar esto. Además, se define su tamaño dependiendo de algunas constantes que se debieron utilizar para parametrizar el problema, por lo que se los calculó en función de ellas para una mejor comprensión.
+
+Se programaron las funciones \texttt{mod()} y \texttt{vecinos()} en ASM MIPS32. Por prolijidad, y para no proveer archivos fuente demasiado extensos, se separaron sus declaraciones en 2 archivos .h. Las declaraciones son
+\begin{lstlisting}[language=C, style=StyleC]
+extern int mod(int x, int m);
+extern unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j, unsigned int M, unsigned int N);
+\end{lstlisting}
+para indicarle al compilador que dichos símbolos están definidos en otros archivos (los .S). 
+
+Por otro lado, como ventaja fue fundamental dicha división ya que permitió realizar depuraciones más simples cuando tuvimos diferentes errores en la codificación del programa.
+
+\subsection{\texttt{mod()}}
+
+La función \texttt{mod()} realiza la operación
+\begin{lstlisting}[language=C, style=StyleC]
+int r = x % m;
+return r < 0 ? r + m : r;
+\end{lstlisting}
+
+Debido a que la función recibe dos argumentos por los registros \texttt{a0} y \texttt{a1}, hay que guardar dichos valores en el stack del caller según la convención utilizada
+\begin{lstlisting}[language=C, style=StyleC]
+sw      a0, x(fp)
+sw      a1, m(fp)
+\end{lstlisting}
+
+Es una función de pocas líneas de código, donde la operación \quotes{resto} se realiza en la instrucción
+\begin{lstlisting}[language=C, style=StyleC]
+remu    t0,a0,a1
+\end{lstlisting}
+
+El stack que crea la función se muestra en la figura \ref{stack_mod}. El código se encuentra en el apéndice \ref{app_mod_s}. En particular, ver las directivas en las primeras líneas donde se define el tamaño del stack
+\begin{lstlisting}[language=C, style=StyleC]
+# Local and Temporary Area (LTA).
+#define r 0
+#define PADDING_LTA_0 r + 4
+
+# Saved-registers area (SRA).
+#define GP PADDING_LTA_0 + 4
+#define FP GP + 4
+
+# Caller ABA.
+#define x FP + 4
+#define m x + 4
+
+#define STACK_SIZE FP + 4
+\end{lstlisting}
+
+Además, al ser una función hoja, no hace falta guardar el registro \texttt{ra}, ni tampoco crear la \textit{Argument Building Area}.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{@{}l|c|@{}}
+		\cmidrule(l){2-2} 
+		\multicolumn{1}{c|}{\textbf{}} & \textbf{Local and Temporary Area (LTA)} \\ \cmidrule(l){2-2} 
+		0 & r \\ \cmidrule(l){2-2} 
+		4 & PADDING\_LTA\_0 \\ \cmidrule(l){2-2} 
+		\multicolumn{1}{c|}{\textbf{}} & \textbf{Saved-registers area (SRA)} \\ \cmidrule(l){2-2} 
+		8 & GP \\ \cmidrule(l){2-2} 
+		12 & FP \\ \cmidrule(l){2-2} 
+		\multicolumn{1}{c|}{\textbf{}} & \textbf{Stack caller} \\ \cmidrule(l){2-2} 
+		16 & x \\ \cmidrule(l){2-2} 
+		20 & m \\ \cmidrule(l){2-2} 
+	\end{tabular}
+	\caption{Diseño del stack de la función \texttt{mod()}. La primer columna se corresponde con el offset en bytes respecto del frame pointer.}
+	\label{stack_mod}
+\end{table}
+
+El tamaño del stack queda definido por la directiva
+\begin{lstlisting}[language=C, style=StyleC]
+#define STACK_SIZE FP + 4
+\end{lstlisting}
+y toma el valor de \SI{16}{}.
+
+\subsection{\texttt{vecinos()}}
+
+\hl{TODO: mostrar que hace y las partes de codigo importantes.}
+
+El stack que crea la función se muestra en la figura \ref{stack_vecinos}. El código se encuentra en el apéndice \ref{app_vecinos_s}.
+
+%-------------------------------%
+%								%
+%			Seccion				%
+%								%
+%-------------------------------%
+\section{Compilación del programa y portabilidad}
+
+Debido al requerimiento de utilizar el programa en una computadora con arquitectura MIPS32, se utilizó el emulador \texttt{qemu}, utilizando una máquina virtual que contiene el sistema operativo \texttt{Linux Debian 4.9.65-3 (2017-12-03) mips64 GNU/Linux} con las herramientas \texttt{gcc} y \texttt{make} para compilar el programa desarrollado. Se utilizó el lenguaje de programación C, procurando utilizar únicamente funciones standard que provee el lenguaje. De esta forma, si bien el programa debería poder compilarse independientemente del sistema operativo, se lo compila en un sistema tipo UNIX.
+
+Para obtener un ejecutable, se creó un archivo \texttt{Makefile} cuyo contenido se puede ver en la sección \ref{app_makefile}. Se provee la posibilidad de utilizar los códigos fuente en lenguaje C, o si no utilizar las implementaciones correspondientes en lenguaje ASM MIPS32. Para el primer caso, posicionarse en el directorio \texttt{src/} y ejecutar el siguiente comando:
+\begin{lstlisting}[language=bash, style=StyleC]
+$ make 
+\end{lstlisting}
+Para el segundo caso, ejecutar el siguiente comando
+\begin{lstlisting}[language=bash, style=StyleC]
+$ make use_S_files
+\end{lstlisting}
+
+En el mismo puede verse que se utilizan los archivos .S que contienen el código MIPS32 assembly, que serán utilizados directamente por el ensamblador. La declaración de los mismos se realiza en la variable \texttt{\_SRC1}
+\begin{lstlisting}[language=bash, style=StyleC]
+_SRC1_S = conway.c tablero.c cmd_line_parser.c vecinos.S mod.S
+\end{lstlisting}
+
+Los flags de compilación utilizados para todos los casos son
+\begin{lstlisting}[language=bash, style=StyleC]
+CFLAGS = -Wall -O0 -g -mips32 -mlong32
+\end{lstlisting}
+
+Para eliminar todos los archivos generados, ejecutar
+\begin{lstlisting}[language=bash, style=StyleC]
+$ make clean
+\end{lstlisting}
+
+El programa ejecutable aparecerá en el directorio donde se ejecutó el comando \texttt{make}, con el nombre \texttt{conway}. Las imágenes generadas por el programa son guardadas en el directorio \texttt{output/}.
+
+%-------------------------------%
+%								%
+%			Seccion				%
+%								%
+%-------------------------------%
+\clearpage
+\section{Casos de prueba}
+
+Se muestran los resultados de las distintas pruebas de caja negra que se realizaron sobre el programa para determinar su robustez y fiabilidad ante diferentes tipos de entradas. Además, se muestra el resultado de utilizar \texttt{Valgrind} para detectar fugas de memoria, ya que se hace uso de funciones que gestionan memoria dinámica.
+
+\subsection{Prueba de fuga de memoria}
+
+Para verificar si existen bloques de memoria no liberados por el programa, se ejecuta el siguiente comando
+\begin{lstlisting}[language=bash, style=StyleC]
+valgrind  --tool=memcheck --leak-check=full --show-leak-kinds=all -v ./conway 10 20 20 glider -o estado
+\end{lstlisting}
+y el resultado obtenido es
+\begin{lstlisting}[language=bash, style=StyleC]
+==1837== 
+==1837== HEAP SUMMARY:
+==1837==     in use at exit: 0 bytes in 0 blocks
+==1837==   total heap usage: 45 allocs, 45 frees, 56,728 bytes allocated
+==1837== 
+==1837== All heap blocks were freed -- no leaks are possible
+==1837== 
+==1837== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1837== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+\end{lstlisting}
+indicando que no existen fugas de memoria.
+
+
+
+
+\subsection{Pruebas de errores en arumentos al programa}
+
+Se creó un script en lenguaje \texttt{Bash} para automatizar las pruebas del programa.  El código del script se encuentra en la sección \ref{app_run_tests}, y está compuesto por 5 test.
+
+La salida del script se divide en 2 secciones, cada una con un encabezado indicando el inicio del nuevo test y su nombre, y varias líneas por cada test. La primer línea del cuerpo del test es el comando ejecutado, indicado con la etiqueta \texttt{Testing}. La segunda indica si el test fue exitoso o no mediante la etiqueta \texttt{PASSED/FAILED} en color verde o rojo respectivamente, y las siguientes líneas son los resultados que produce el programa (mensajes de error, etc...). Por ejemplo, para la prueba de la opción \quotes{-o}, se tiene lo siguiente:
+\begin{lstlisting}[language=bash, style=StyleC]
+------------------------------------------------------
+TEST11: no 'output' option arg.
+------------------------------------------------------
+Testing: ./conway -o
+PASSED
+PROGRAM OUTPUT:
+./conway: option requires an argument -- 'o'
+\end{lstlisting}
+donde se ve que el test fue satisfactorio ya que no se introdujo un nombre de prefijo de archivos de salida.
+
+El script con las pruebas debe ejecutarse dentro del sistema operativo guest. Para ello deberán cargarse los códigos fuentes del programa, compilar los mismos, y finalmente posicionarse en el directorio \texttt{src/} para ejecutar el comando \texttt{./run\_tests.sh}.
+
+Si todos los tests son exitosos, entonces al final de la ejecución se debe obtener el siguiente mensaje.
+\begin{lstlisting}[language=bash, style=StyleC]
+------------------------------------------------------
+Test suite ended.
+------------------------------------------------------
+  All tests passed.
+\end{lstlisting}
+
+En caso de que no sean exitosos todos los tests, el script indicará en color rojo cuántos y cuales de estos no lo hicieron, similar al siguiente mensaje
+\begin{lstlisting}[language=bash, style=StyleC]
+------------------------------------------------------
+TEST11: no 'input' option parameters.
+------------------------------------------------------
+Testing: ./conway 10 20 20 glider -o \
+FAILED 
+  PROGRAM OUTPUT:
+	./tp0: option requires an argument -- 'i'
+
+------------------------------------------------------
+Test suite ended.
+------------------------------------------------------
+  Failed tests: 1
+\end{lstlisting}
+
+
+\subsection{Pruebas en las opciones de programa}
+
+En el script de tests se prueban diferentes combinaciones de las opciones de entrada para verificar si el programa es capaz de detectar errores. Los tests son validaciones utilizando opciones y parámetros inválidos, donde se verifica que al intentar ejecutarlo, el programa termina y retorna un mensaje que indique el motivo de la ejecución fallida. El test \texttt{test3\_valid\_parameters} se corresponde con ejecuciones que retornan un código de éxito. 
+
+Las salidas arrojadas por el script fueron las siguientes:
+
+\lstinputlisting[language=bash, style=StyleC]{../src/tests_results.txt}
+
+\clearpage
+\subsection{Pruebas de generación de imágenes}
+\hl{TODO: Corridas de prueba para diez iteraciones, en una matriz de 20x20, de los archivos de entrada glider, pento y sapo, con los comentarios pertinentes.}
+
+\subsection{Glider}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[scale=0.5]{includes/gl_img/glider001.png}
+	\caption{text}
+\end{figure}
+con mips:
+
+sin mips:
+
+\subsection{Sapo}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[scale=0.5]{includes/gl_img/sapo001.png}
+	\caption{text}
+\end{figure}
+
+con mips:
+
+sin mips:
+
+\subsection{Pento} 
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[scale=0.5]{includes/gl_img/pento001.png}
+	\caption{text}
+\end{figure}
+
+con mips:
+
+sin mips:
+
+%-------------------------------%
+%								%
+%			Seccion				%
+%								%
+%-------------------------------%
+\section{Herramientas de hardware y software utilizadas}\label{sec_tools}
+
+La computadora utilizada para realizar el desarrollo y las pruebas tiene las siguientes especificaciones:
+\begin{itemize}
+	\item Procesador: Intel i3-6100.
+	\item Memoria: 16GB RAM DDR4.
+	\item Almacenamiento: Disco HDD SATA 1TB de 7200RPM - Disco V-NAND SSD NVME 500 GB.
+\end{itemize}
+
+El entorno de desarrollo utilizado fue una máquina virtual con sistema operativo \texttt{Linux Debian 4.9.65-3 (2017-12-03) mips64 GNU/Linux} ejecutada a través del programa \texttt{qemu}, donde el sistema operativo host fue Linux Ubuntu, cuyos datos de distribución son
+\begin{itemize}
+	\item Distributor ID: Ubuntu
+	\item Description: Ubuntu 18.04.4 LTS
+	\item Release: 18.04
+	\item Codename: bionic
+\end{itemize}
+
+Además, se utilizaron las siguientes herramientas:
+\begin{itemize}
+	\item \underline{Compilador del proyecto}: gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516 \cite{tool_gcc}.
+	\item \underline{Control del proceso de compilación}: GNU Make 4.1 \cite{tool_gnuMake}.
+	\item \underline{Compilador del presente informe}: pdfTeX 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) \cite{tool_latex}.
+    \item \underline{Edición de código fuente}: VIM - Vi IMproved 8.0 (2016 Sep 12, compiled Mar 18 2020 18:29:15) \cite{tool_vim}.
+	\item \underline{Depuración del programa}: GNU gdb (Debian 7.12-6) 7.12.0.20161007-git \cite{tool_gdb}.
+\end{itemize}
+
+%-------------------------------%
+%								%
+%			Seccion				%
+%								%
+%-------------------------------%
+\section{Conclusiones}
+
+%-------------------------------%
+%								%
+%			Seccion				%
+%								%
+%-------------------------------%
+\clearpage
+\begin{thebibliography}{10}
+	\bibitem{book_CompArch} Hennessy, J. L. - Patterson, D. A. - \emph{Computer Architecture: A Quantitative Approach} - 3\textsuperscript{rd} edition - Morgan Kaufmann - 2002.
+	\bibitem{book_CompOrg} Patterson, D. A. - Hennessy, J. L. - \emph{Computer Organization and Design: The Hardware/Software Interface} - 3\textsuperscript{rd} edition - Morgan Kaufmann - 2004.
+	\bibitem{book_Cprogr} Kernighan, B. W. - Ritchie, D. M. - \emph{C Programming Language} - 2\textsuperscript{nd} edition - Prentice Hall - 1988.
+	\bibitem{apuntes} \emph{Apuntes del curso 66.20 Organización de Computadoras} - Cátedra Hamkalo - Facultad de Ingeniería de la Universidad de Buenos Aires.
+	\bibitem{abi} \emph{System V Application Binary Interface - MIPS/RISC Processor Supplement} - 3\textsuperscript{nd} edition - 1996.
+	\bibitem{tool_gnuMake} \emph{GNU Make} - \hyperlink{make}{https://www.gnu.org/software/make/}
+	\bibitem{tool_gcc} \emph{GNU Gcc} - \hyperlink{gcc}{https://gcc.gnu.org/}
+	\bibitem{tool_latex}
+	\href{https://www.latex-project.org/}{\LaTeX - https://www.latex-project.org/}
+	\bibitem{tool_vim}
+	\href{https://vim.sourceforge.io/}{VIM - https://vim.sourceforge.io/}
+	\bibitem{tool_gdb}
+	\href{https://www.gnu.org/software/gdb/}{GNU gdb - https://www.gnu.org/software/gdb/}
+\end{thebibliography}
+\clearpage
+
+%-----------------------------------%
+%									%
+%			Seccion:Fuente			%
+%									%
+%-----------------------------------%
+\appendix
+
+\includepdf[pages=1,scale=0.95,pagecommand = \section{Enunciado del trabajo práctico}\label{enunciado},offset=10 -10]{includes/tp1-c1-2020.pdf}
+\includepdf[pages={2-last},scale=0.95,pagecommand = {},offset=10 -10]{includes/tp1-c1-2020.pdf}
+
+\section{Makefile}\label{appendix_makefile}
+
+\subsubsection{makefile}\label{app_makefile}
+\lstinputlisting[language=bash, style=StyleC]{../src/Makefile}
+\clearpage
+
+\section{Tests}\label{appendix_tests}
+
+\subsubsection{run\_tests.sh}\label{app_run_tests}
+\lstinputlisting[language=bash, style=StyleC]{../src/run_tests.sh}
+
+\clearpage
+\section{Header files}\label{appendix_headers}
+
+\subsubsection{cmd\_line\_parser.h}\label{app_cmd_line_parser_h}
+\lstinputlisting[language=C, style=StyleC]{../src/cmd_line_parser.h}
+\clearpage
+
+\subsubsection{mod.h}\label{app_mod_h}
+\lstinputlisting[language=C, style=StyleC]{../src/mod.h}
+\clearpage
+
+\subsubsection{params\_t.h}\label{app_params_t_h}
+\lstinputlisting[language=C, style=StyleC]{../src/params_t.h}
+\clearpage
+
+\subsubsection{tablero.h}\label{app_tablero_h}
+\lstinputlisting[language=C, style=StyleC]{../src/tablero.h}
+\clearpage
+
+\subsubsection{vecinos.h}\label{app_vecinos_h}
+\lstinputlisting[language=C, style=StyleC]{../src/vecinos.h}
+\clearpage
+
+
+\clearpage
+\section{Código fuente}\label{appendix_codigo_fuente}
+
+\subsubsection{cmd\_line\_parser.c}\label{app_cmd_line_parser}
+\lstinputlisting[language=C, style=StyleC]{../src/cmd_line_parser.c}
+\clearpage
+
+\subsubsection{conway.c}\label{app_main}
+\lstinputlisting[language=C, style=StyleC]{../src/conway.c}
+\clearpage
+
+\subsubsection{mod.c}\label{app_mod}
+\lstinputlisting[language=C, style=StyleC]{../src/mod.c}
+\clearpage
+
+\subsubsection{mod.S}\label{app_mod_s}
+\lstinputlisting[language=C, style=StyleC]{../src/mod.S}
+\clearpage
+
+\subsubsection{tablero.c}\label{app_tablero}
+\lstinputlisting[language=C, style=StyleC]{../src/tablero.c}
+\clearpage
+
+\subsubsection{vecinos.c}\label{app_vecinos}
+\lstinputlisting[language=C, style=StyleC]{../src/vecinos.c}
+\clearpage
+
+\subsubsection{vecinos.S}\label{app_vecinos_s}
+\lstinputlisting[language=C, style=StyleC]{../src/vecinos.S}
+\clearpage
+
+\end{document}
