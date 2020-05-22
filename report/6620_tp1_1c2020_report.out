@@ -1,0 +1,35 @@
+\BOOKMARK [1][-]{section.1}{Objetivos}{}% 1
+\BOOKMARK [1][-]{section.2}{Dise\361o e implementaci\363n del programa}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{mod\(\)}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{vecinos\(\)}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{Compilaci\363n del programa y portabilidad}{}% 5
+\BOOKMARK [1][-]{section.4}{Casos de prueba}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{Prueba de fuga de memoria}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.2}{Pruebas de errores en arumentos al programa}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.3}{Pruebas en las opciones de programa}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.4}{Pruebas de generaci\363n de im\341genes}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.5}{Glider}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.6}{Sapo}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.7}{Pento}{section.4}% 13
+\BOOKMARK [1][-]{section.5}{Herramientas de hardware y software utilizadas}{}% 14
+\BOOKMARK [1][-]{section.6}{Conclusiones}{}% 15
+\BOOKMARK [1][-]{section*.6}{Referencias}{}% 16
+\BOOKMARK [1][-]{appendix.Alph1}{Enunciado del trabajo pr\341ctico}{}% 17
+\BOOKMARK [1][-]{appendix.Alph2}{Makefile}{}% 18
+\BOOKMARK [2][-]{subsubsection.Alph2.0.1}{makefile}{appendix.Alph2}% 19
+\BOOKMARK [1][-]{appendix.Alph3}{Tests}{}% 20
+\BOOKMARK [2][-]{subsubsection.Alph3.0.1}{run\137tests.sh}{appendix.Alph3}% 21
+\BOOKMARK [1][-]{appendix.Alph4}{Header files}{}% 22
+\BOOKMARK [2][-]{subsubsection.Alph4.0.1}{cmd\137line\137parser.h}{appendix.Alph4}% 23
+\BOOKMARK [3][-]{subsubsection.Alph4.0.2}{mod.h}{subsubsection.Alph4.0.1}% 24
+\BOOKMARK [3][-]{subsubsection.Alph4.0.3}{params\137t.h}{subsubsection.Alph4.0.1}% 25
+\BOOKMARK [3][-]{subsubsection.Alph4.0.4}{tablero.h}{subsubsection.Alph4.0.1}% 26
+\BOOKMARK [3][-]{subsubsection.Alph4.0.5}{vecinos.h}{subsubsection.Alph4.0.1}% 27
+\BOOKMARK [1][-]{appendix.Alph5}{C\363digo fuente}{}% 28
+\BOOKMARK [2][-]{subsubsection.Alph5.0.1}{cmd\137line\137parser.c}{appendix.Alph5}% 29
+\BOOKMARK [3][-]{subsubsection.Alph5.0.2}{conway.c}{subsubsection.Alph5.0.1}% 30
+\BOOKMARK [3][-]{subsubsection.Alph5.0.3}{mod.c}{subsubsection.Alph5.0.1}% 31
+\BOOKMARK [3][-]{subsubsection.Alph5.0.4}{mod.S}{subsubsection.Alph5.0.1}% 32
+\BOOKMARK [3][-]{subsubsection.Alph5.0.5}{tablero.c}{subsubsection.Alph5.0.1}% 33
+\BOOKMARK [3][-]{subsubsection.Alph5.0.6}{vecinos.c}{subsubsection.Alph5.0.1}% 34
+\BOOKMARK [3][-]{subsubsection.Alph5.0.7}{vecinos.S}{subsubsection.Alph5.0.1}% 35
