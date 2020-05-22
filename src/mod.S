@@ -30,7 +30,7 @@ mod:
     subu	sp,sp,STACK_SIZE
     # Save the callee-saved registers used by the caller in the SRA.
     sw	    fp,FP(sp)
-    sw      gp, GP(sp)
+.cprestore GP # Equivalent to     sw      gp, GP(sp).
     # We adopt the convention of using the frame pointer
     # as our index in the stack.
     move    fp,sp
@@ -46,7 +46,7 @@ mod:
     sw      t0,r(fp)
     blt     t0, zero, r_plus_m
     lw		v0, r(fp)
-    j		exit_function
+    b		exit_function
 
 r_plus_m:
     add		v0, t0, a1
@@ -56,6 +56,6 @@ exit_function:
     lw      fp, FP(sp)
     lw      gp, GP(sp)
     addu    sp, sp, STACK_SIZE
-    j       ra
+    jr      ra
 
 .end	mod

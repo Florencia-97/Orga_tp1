@@ -11,11 +11,9 @@
 # ------------------------------------------------------------
 # List all the header and object files separated by a blank
 # space.
-_DEPS = params_t.h
-# If needed, use the MIPS .S file. Just replace 'vecinos.c' 
-# with 'vecinos.s'.
-_SRC1 = conway.c tablero.c cmd_line_parser.c vecinos.S mod.S
-_OBJ1 = conway.o tablero.o cmd_line_parser.o
+_DEPS = params_t.h messages.h
+_SRC1_c = conway.c tablero.c cmd_line_parser.c vecinos.c mod.c
+_SRC1_S = conway.c tablero.c cmd_line_parser.c vecinos.S mod.S
 # ------------------------------------------------------------
 # Configuration.
 CC = gcc
@@ -24,13 +22,13 @@ OUTPUT1 = conway
 # ------------------------------------------------------------
 all: $(OUTPUT1)
 
-$(OUTPUT1): $(_SRC1) 
-	$(CC) $(CFLAGS) -o $@ $(_SRC1)
+$(OUTPUT1): $(_SRC1_c) 
+	$(CC) $(CFLAGS) -o $@ $(_SRC1_c)
 
-assembly:
-	$(CC) $(CFLAGS) -S $(_SRC1)
+use_S_files: $(_SRC1_s) 
+	$(CC) $(CFLAGS) -o $(OUTPUT1) $(_SRC1_S)
 
-.PHONY: clean assembly
+.PHONY: clean use_S_files
 
 clean:
 	rm -f ./*.o ./*~ ./*.core ./*~

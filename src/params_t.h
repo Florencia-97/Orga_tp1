@@ -5,12 +5,12 @@
 
 typedef struct params_t
 {
-    int i;
-    int N;
-    int M;
-    FILE *inputStream;
-    FILE *outputStream;
-    char *prefix;
+	int i;
+	int N;
+	int M;
+	FILE *inputStream;
+	FILE *outputStream;
+	char *prefix;
 } params_t;
 
 #endif

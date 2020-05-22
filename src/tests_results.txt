@@ -1,0 +1,71 @@
+------------------------------------------------------
+TEST1: inexistent 'input' stream.
+------------------------------------------------------
+Testing: ./conway 10 20 20 invalid
+PASSED
+  PROGRAM OUTPUT:
+        ERROR: Can't open input stream.
+------------------------------------------------------
+TEST11: no 'output' option arg.
+------------------------------------------------------
+Testing: ./conway -o
+PASSED
+  PROGRAM OUTPUT:
+        ./conway: option requires an argument -- 'o'
+------------------------------------------------------
+TEST2: invalid 'out' stream.
+------------------------------------------------------
+Testing: ./conway 10 20 20 glider -o .
+PASSED
+  PROGRAM OUTPUT:
+        ERROR: Invalid output stream.
+Testing: ./conway 10 20 20 glider -o ..
+PASSED
+  PROGRAM OUTPUT:
+        ERROR: Invalid output stream.
+Testing: ./conway 10 20 20 glider -o /
+PASSED
+  PROGRAM OUTPUT:
+        ERROR: Invalid output stream.
+Testing: ./conway 10 20 20 glider -o //
+PASSED
+  PROGRAM OUTPUT:
+        ERROR: Invalid output stream.
+------------------------------------------------------
+TEST21: not enough input arguments.
+------------------------------------------------------
+Testing: ./conway 10
+PASSED
+  PROGRAM OUTPUT:
+        ERROR: not enough input arguments.
+Testing: ./conway 10 20
+PASSED
+  PROGRAM OUTPUT:
+        ERROR: not enough input arguments.
+Testing: ./conway 10 20 20
+PASSED
+  PROGRAM OUTPUT:
+        ERROR: not enough input arguments.
+------------------------------------------------------
+TEST3: all options with correct parameters.
+------------------------------------------------------
+Testing: ./conway 10 20 20 glider
+PASSED
+  PROGRAM OUTPUT:
+        Leyendo estado inicial...
+Grabando ../output/glider001.pbm
+Grabando ../output/glider002.pbm
+Grabando ../output/glider003.pbm
+Grabando ../output/glider004.pbm
+Grabando ../output/glider005.pbm
+Grabando ../output/glider006.pbm
+Grabando ../output/glider007.pbm
+Grabando ../output/glider008.pbm
+Grabando ../output/glider009.pbm
+Grabando ../output/glider010.pbm
+Listo.
+------------------------------------------------------
+Test suite ended.
+------------------------------------------------------
+  All tests passed.
+
