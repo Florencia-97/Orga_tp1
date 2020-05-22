@@ -1,4 +1,6 @@
-# TP1 ORGA
+# 66.20 Organización de computadoras
+# 1C2020
+# TP1: Conjunto de instrucciones MIPS.
 
 ## Compilación utilizando archivos .c
 Posicionarse en el directorio 'src/' y ejecutar:
