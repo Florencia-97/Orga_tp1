@@ -1,39 +1,36 @@
 #include <sys/regdef.h>
 
-# ERRORES EN LINEAS 79, 104, 151, 164
-# vecinos.S:161: Error: junk at end of line, first unrecognized character is `0'
-
 # Non-leaf function.
 
 # Argument building area (ABA).
-#define ARG0 0
-#define ARG1 ARG0 + 4
-#define ARG2 ARG1 + 4
-#define ARG3 ARG2 + 4
-#define PADDING_ABA0 ARG3 + 4
+#define ARG0                (0)
+#define ARG1                (ARG0 + 4)
+#define ARG2                (ARG1 + 4)
+#define ARG3                (ARG2 + 4)
+#define PADDING_ABA0        (ARG3 + 4)
 
 # Local and Temporary Area (LTA).
-#define contador PADDING_ABA0 + 4
-#define c1 contador + 4
-#define c2 c1 + 4
-#define f  c2 + 4
-#define c  f + 4
-#define PADDING_LTA_0 c + 4
+#define contador            (PADDING_ABA0 + 4)
+#define c1                  (contador + 4)
+#define c2                  (c1 + 4)
+#define f                   (c2 + 4)
+#define c                   (f + 4)
+#define PADDING_LTA_0       (c + 4)
 
 # Saved-registers area (SRA).
-#define GP PADDING_LTA_0 + 4
-#define FP GP + 4
-#define RA FP + 4
-#define PADDING_SRA0 RA + 4
+#define GP                  (PADDING_LTA_0 + 4)
+#define FP                  (GP + 4)
+#define RA                  (FP + 4)
+#define PADDING_SRA0        (RA + 4)
 
 # Caller ABA.
-#define a PADDING_SRA0 + 4
-#define i a + 4
-#define j i + 4
-#define M j + 4
-#define N M + 4
+#define a                   (PADDING_SRA0 + 4)
+#define i                   (a + 4)
+#define j                   (i + 4)
+#define M                   (j + 4)
+#define N                   (M + 4)
 
-#define STACK_SIZE PADDING_SRA0 + 4
+#define STACK_SIZE          (PADDING_SRA0 + 4)
 
 .text
 .align	2
@@ -44,7 +41,6 @@
 .set	noreorder
 .cpload	t9
 .set	reorder
-.cprestore GP
 
 vecinos:
     # Allocate memory for the stack.
@@ -52,7 +48,7 @@ vecinos:
     # Save the callee-saved registers used by the caller in the SRA.
     sw      ra, RA(sp)
     sw	    fp, FP(sp)
-    sw      gp, GP(sp)
+    .cprestore GP # Alternative: sw      gp, GP(sp)
     # We adopt the convention of using the frame pointer
     # as our index in the stack.
     move    fp,sp
@@ -70,6 +66,10 @@ vecinos:
     # body: vecinos()            #
     ##############################
     sw		zero, contador(fp)
+    sw		zero, c1(fp)
+    sw		zero, c2(fp)
+    sw		zero, f(fp)
+    sw		zero, c(fp)
 
     # c1 = -1
     li		t0, -1
@@ -79,13 +79,13 @@ outer_for:
     li      t1, 1
     lw      t0, c1(fp)
     ble	    t0, t1, outer_for_body
-#   j       exit_function
+    b       exit_function
 
 outer_for_body:
-    # mod(i + c1, N)
+    # f = mod(i + c1, N)
     lw		t0, i(fp)
     lw		t1, c1(fp)
-    addu    a0, t1, t0
+    add     a0, t1, t0
     lw		a1, N(fp)
     jal		mod
     sw		v0, f(fp)
@@ -101,26 +101,25 @@ inner_for:
 
     # ++c1
     lw      t0, c1(fp)
-    li      t1, 1
-    addu    t0, t1, t0
+    addi	t0, t0, 1
     sw		t0, c1(fp)
-#    j       outer_for
+    b       outer_for
 
 inner_for_body:
     # c1 == 0
     lw      t0, c1(fp)
     seq     t1, t0, zero
     # c2 == 0
-    lw		t2, c2(fp)
-    seq     t3, t2, zero
+    lw		t0, c2(fp)
+    seq     t2, t0, zero
     # c1 && c2
-    and     t0, t3, t1
-    beqz    t0, inner_loop_body_continue
+    and     t0, t2, t1
+    bnez    t0, inner_loop_body_continue
 
-    # mod(j + c2, M)
+    # c = mod(j + c2, M)
     lw		t0, j(fp)
     lw		t1, c2(fp)
-    addu    a0, t1, t0
+    add     a0, t1, t0
     lw		a1, M(fp)
     jal		mod
     sw		v0, c(fp)
@@ -129,29 +128,28 @@ inner_for_body:
     lw		t0, f(fp)
     lw		t1, M(fp)
     lw		t2, c(fp)
-    mul     t3, t0, t1
-    addu    t4, t3, t2
+    mul     t0, t0, t1
+    addu    t0, t0, t2
     # access a[].
-    sll     t0, t4, 2 # index.
-    lw      t1, a(fp) # base.
+    lw      t1, a(fp)
     addu    t0, t1, t0
-    lw		t0, 0(t0) # access array.
+    lbu		t0, 0(t0)
+    sll     t0, t0, 24 # Stay with lower byte.
+    sra     t0, t0, 24
     li      t1, 1
-    seq     t2, t0, t1
-    beqz    t2, inner_loop_body_continue
+    seq     t0, t0, t1
+    beqz    t0, inner_loop_body_continue
     # contador ++
     lw      t0, contador(fp)
-    li      t1, 1
-    addu    t0, t0, t1
+    addi	t0, t0, 1
     sw      t0, contador(fp)
 
 inner_loop_body_continue:
     # ++c2
     lw      t0, c2(fp)
-    li      t1, 1
-    addu    t0, t1, t0
+    addi	t0, t0, 1
     sw		t0, c2(fp)
-#   j       inner_for
+    b       inner_for
 
     # ------------------------------
 exit_function:
@@ -161,6 +159,6 @@ exit_function:
     lw      fp, FP(sp)
     lw      gp, GP(sp)
     addu    sp, sp, STACK_SIZE
-#   j       ra
-
+    jr		ra
+    
 .end	vecinos
