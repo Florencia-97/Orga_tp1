@@ -1,0 +1,59 @@
+SAPO:
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m4.636s
+user	0m4.404s
+sys	0m0.232s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m6.188s
+user	0m5.896s
+sys	0m0.288s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m4.516s
+user	0m4.276s
+sys	0m0.232s
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m4.732s
+user	0m4.452s
+sys	0m0.268s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m3.984s
+user	0m3.740s
+sys	0m0.240s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m4.673s
+user	0m4.428s
+sys	0m0.240s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m3.093s
+user	0m2.880s
+sys	0m0.212s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m5.944s
+user	0m5.684s
+sys	0m0.252s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m3.709s
+user	0m3.528s
+sys	0m0.176s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 sapo -o estado
+real	0m5.348s
+user	0m5.128s
+sys	0m0.216s
+
+---
+root@debian-stretch-mips:/orga_tp1/src# cat sapo
+5 3
+5 4
+5 5
+4 4
+4 5
+4 6
