@@ -7,10 +7,9 @@
 #define ARG1                (ARG0 + 4)
 #define ARG2                (ARG1 + 4)
 #define ARG3                (ARG2 + 4)
-#define PADDING_ABA0        (ARG3 + 4)
 
 # Local and Temporary Area (LTA).
-#define contador            (PADDING_ABA0 + 4)
+#define contador            (ARG3 + 4)
 #define c1                  (contador + 4)
 #define c2                  (c1 + 4)
 #define f                   (c2 + 4)

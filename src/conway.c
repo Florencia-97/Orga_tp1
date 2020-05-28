@@ -23,6 +23,11 @@ M -> coordenada x
 N -> coordenada y
 path -> nombre archivo */
 
+#ifdef MEASURE_EXEC_TIMES
+size_t times_called;
+double mean_time;
+#endif
+
 int main(int argc, char *argv[])
 {
 	params_t params;
@@ -31,6 +36,18 @@ int main(int argc, char *argv[])
 	{
 		exit(EXIT_FAILURE);
 	}
+
+#ifdef MEASURE_EXEC_TIMES
+#include "shared.h"
+	times_called = 0;
+	mean_time = 0;
+	FILE *time_measurements_fp =
+	    fopen("time_measurements.txt", "w");
+	if (time_measurements_fp == NULL)
+	{
+		fprintf(stderr, ERROR_OUTPUT_STREAM_WRITING_MSG);
+	}
+#endif
 
 	tablero_t *tablero = tablero_crear(params.M, params.N);
 	tablero_cargar_tablero(tablero, &params);
@@ -44,6 +61,15 @@ int main(int argc, char *argv[])
 
 	tablero_eliminar(tablero);
 	fprintf(stdout, MSG_READY);
+
+#ifdef MEASURE_EXEC_TIMES
+	fprintf(stdout, "Mean time: %.2f [us] for %d iterations.\n", mean_time,times_called);
+	fprintf(time_measurements_fp, "Mean time: %.2f [us] for %d iterations.\n", mean_time,times_called);
+	if (time_measurements_fp != NULL)
+	{
+		fclose(time_measurements_fp);
+	}
+#endif
 
 	return EXIT_SUCCESS;
 }

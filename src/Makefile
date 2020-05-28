@@ -17,7 +17,7 @@ _SRC1_S = conway.c tablero.c cmd_line_parser.c vecinos.S mod.S
 # ------------------------------------------------------------
 # Configuration.
 CC = gcc
-CFLAGS = -Wall -O0 -g -mips32 -mlong32
+CFLAGS = -Wall -O0 -g
 OUTPUT1 = conway
 # ------------------------------------------------------------
 all: $(OUTPUT1)
@@ -26,7 +26,13 @@ $(OUTPUT1): $(_SRC1_c)
 	$(CC) $(CFLAGS) -o $@ $(_SRC1_c)
 
 use_S_files: $(_SRC1_s) 
-	$(CC) $(CFLAGS) -o $(OUTPUT1) $(_SRC1_S)
+	$(CC) $(CFLAGS) -o $(OUTPUT1) $(_SRC1_S) -mips32 -mlong32
+
+measureTimeCFiles: $(_SRC1_c) 
+	$(CC) $(CFLAGS) -o $(OUTPUT1) $(_SRC1_c) -D MEASURE_EXEC_TIMES
+
+measureTimeSFiles: $(_SRC1_s) 
+	$(CC) $(CFLAGS) -o $(OUTPUT1) $(_SRC1_S) -D MEASURE_EXEC_TIMES
 
 .PHONY: clean use_S_files
 

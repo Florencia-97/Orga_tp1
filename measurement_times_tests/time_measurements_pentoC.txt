@@ -1,0 +1,1 @@
+Mean time: 2.37 [us] for 4000 iterations.

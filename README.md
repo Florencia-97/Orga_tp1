@@ -13,6 +13,18 @@ Si se quiere utilizar los archivos codificados en ASM MIPS32, ejecutar
 make use_S_files
 ```
 
+### Compilación para realizar mediciones de tiempo promedio de ejecución
+Para utilizar las funciones en lenguaje C, ejecutar:
+```
+make measureTimeCFiles
+```
+
+Para utilizar las funciones en lenguaje ASM MIPS32, ejecutar:
+```
+make measureTimeSFiles
+```
+En todos los casos, se crea un archivo de texto en el directorio de ejecución con el tiempo de medición calculado.
+
 ### Ejemplo de generación de imágenes
 Las imágenes se guardarán en el directorio 'output'
 

@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef MEASURE_EXEC_TIMES
+#include <time.h>
+#endif
+
 #include "messages.h"
 #include "params_t.h"
 #include "vecinos.h"

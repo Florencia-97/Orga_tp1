@@ -38,7 +38,7 @@ int tablero_cargar_tablero(tablero_t *self,
 		exit(EXIT_FAILURE);
 	}
 
-	fprintf(stdout,MSG_READING_INIT_STATE);
+	fprintf(stdout, MSG_READING_INIT_STATE);
 	char buffer[4];
 	while (fgets(buffer, 100, params->inputStream) != NULL)
 	{
@@ -87,9 +87,9 @@ void tablero_imprimir(tablero_t *self, int iteracion,
 		FILE *fp = fopen(filename, "wb");
 		if (fp == NULL)
 		{
-			fprintf(stderr,ERROR_OUTPUT_STREAM_WRITING_MSG);
+			fprintf(stderr, ERROR_OUTPUT_STREAM_WRITING_MSG);
 		}
-		fprintf(stdout,MSG_RECORDING);
+		fprintf(stdout, MSG_RECORDING);
 		printf(" %s\n", filename);
 
 		/* Negro */
@@ -134,8 +134,30 @@ tablero_t *tablero_modificar(tablero_t *self)
 		int j = 0;
 		for (j = 0; j < self->l; j++)
 		{
+#ifdef MEASURE_EXEC_TIMES
+#include "shared.h"
+
+			double mean_time_old = mean_time;
+			// Start measuring time
+			clock_t begin = clock();
+
 			unsigned int v =
 			    vecinos(&self->tabla[0], i, j, self->l, self->h);
+
+			clock_t end = clock();
+			double elapsed_us =
+			    (double)(end - begin) * 1e6 / CLOCKS_PER_SEC;
+
+			mean_time =
+			    (mean_time_old * times_called + elapsed_us) /
+			    (times_called + 1);
+			times_called++;
+
+#else
+			unsigned int v =
+			    vecinos(&self->tabla[0], i, j, self->l, self->h);
+#endif
+
 			int viva = self->tabla[i * self->l + j];
 			if ((v < 2) || (v > 3))
 			{
