@@ -1,0 +1,60 @@
+GLIDER .S:
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m5.637s
+user	0m5.316s
+sys	0m0.260s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m4.407s
+user	0m4.180s
+sys	0m0.212s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m5.097s
+user	0m4.828s
+sys	0m0.248s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m5.461s
+user	0m5.196s
+sys	0m0.244s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m4.678s
+user	0m4.472s
+sys	0m0.188s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m3.749s
+user	0m3.512s
+sys	0m0.220s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m6.140s
+user	0m5.880s
+sys	0m0.232s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m5.337s
+user	0m5.076s
+sys	0m0.236s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m4.083s
+user	0m3.816s
+sys	0m0.252s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 glider -o estado
+real	0m3.324s
+user	0m3.116s
+sys	0m0.188s
+
+---
+root@debian-stretch-mips:/orga_tp1/src# cat glider
+5 3
+5 4
+5 5
+3 4
+4 5
+

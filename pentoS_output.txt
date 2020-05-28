@@ -1,0 +1,61 @@
+PENTO .S:
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m5.196s
+user	0m4.752s
+sys	0m0.272s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m3.830s
+user	0m3.600s
+sys	0m0.216s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m3.175s
+user	0m2.964s
+sys	0m0.196s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m5.095s
+user	0m4.880s
+sys	0m0.196s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m5.118s
+user	0m4.880s
+sys	0m0.224s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m3.501s
+user	0m3.188s
+sys	0m0.204s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m5.099s
+user	0m4.848s
+sys	0m0.232s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m5.152s
+user	0m4.932s
+sys	0m0.200s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m4.717s
+user	0m4.468s
+sys	0m0.232s
+
+root@debian-stretch-mips:/orga_tp1/src# time ./conway 10 20 20 pento -o estado
+real	0m3.881s
+user	0m3.640s
+sys	0m0.228s
+
+---
+root@debian-stretch-mips:/orga_tp1/src# cat pento
+3 5
+3 6
+4 4
+4 5
+5 5
+
+
